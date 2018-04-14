@@ -1,0 +1,66 @@
+{
+  "head": {
+    "docType": "4",
+    "editorVersion": "5.3.14",
+    "c_para": {
+      "pre": "SW_?",
+      "Contributor": "rgwest",
+      "package": "CHERRY MX SWITCH WITH SMD DIODE"
+    },
+    "x": 4000,
+    "y": 3000,
+    "uuid": "a842095c70b440f1881f9664481c57dd",
+    "utime": 1523022963,
+    "importFlag": 0,
+    "transformList": "",
+    "hasIdFlag": true
+  },
+  "canvas": "CA~1000~1000~#000000~yes~#FFFFFF~10~1000~1000~line~1~mil~1~45~visible~0.5~4000~3000",
+  "shape": [
+    "TRACK~1.524~3~~3974.86 2981.91 3974.86 2974.8 3981.97 2974.8~gge5~",
+    "TRACK~1.524~3~~4018.55 2974.8 4025.66 2974.8 4025.66 2981.91~gge6~",
+    "TRACK~1.524~3~~4025.66 3018.49 4025.66 3025.6 4018.55 3025.6~gge7~",
+    "TRACK~1.524~3~~3981.97 3025.6 3974.86 3025.6 3974.86 3018.49~gge8~",
+    "TRACK~1.524~3~~4000.27 3000.11 4000.27 3000.09 4000.25 3000.09 4000.25 3000.11 4000.27 3000.11~gge9~",
+    "TRACK~1~2~~4010 2986 4010 2987 4012 2989 4012 3016 4009 3019~gge35~",
+    "TRACK~1~4~~3988 3015 4012 3015 4012 3025 3988 3025 3988 3015~gge37~",
+    "TRACK~1~4~~3996 3020 4004 3020~gge38~",
+    "TRACK~1~4~~3998 3017 3998 3023~gge43~",
+    "SOLIDREGION~4~~4002 3023 4002 3017 3998 3020~solid~gge42~",
+    "HOLE~3980.42~2999.88~3.75~gge10~",
+    "HOLE~4000.42~2999.88~8.05~gge11~",
+    "HOLE~4020.42~2999.88~3.75~gge12~",
+    "PAD~RECT~3992.5~3020~6~6~2~~2~0.0001~3989.5 3017 3995.5 3017 3995.5 3023 3989.5 3023~0~gge28~0~~Y~",
+    "PAD~RECT~4007.5~3020~6~6~2~~~0.0001~4004.5 3017 4010.5 3017 4010.5 3023 4004.5 3023~0~gge31~0~~Y~",
+    "PAD~OVAL~3988~2987~15.73~8~11~~1~2.75~3990.581 2984.123 3985.419 2989.877~228.11~gge13~13.23~3990.581 2984.123 3985.419 2989.877~Y~",
+    "PAD~OVAL~4010.34~2981.02~10.29~8~11~~~2.75~4010.42 2979.878 4010.26 2982.162~266~gge14~7.79~4010.42 2979.878 4010.26 2982.162~Y~"
+  ],
+  "systemColor": "#000000~#FFFFFF~#FFFFFF~#222222~#FFFFFF",
+  "layers": [
+    "1~TopLayer~#FF0000~true~true~true",
+    "2~BottomLayer~#0000FF~true~false~true",
+    "3~TopSilkLayer~#FFFF00~true~false~true",
+    "4~BottomSilkLayer~#808000~true~false~true",
+    "5~TopPasterLayer~#808080~false~false~false",
+    "6~BottomPasterLayer~#800000~false~false~false",
+    "7~TopSolderLayer~#800080~false~false~false",
+    "8~BottomSolderLayer~#AA00FF~false~false~false",
+    "9~Ratlines~#6464FF~false~false~true",
+    "10~BoardOutline~#FF00FF~true~false~true",
+    "11~Multi-Layer~#C0C0C0~true~false~true",
+    "12~Document~#FFFFFF~true~false~true",
+    "13~TopAssembly~#33CC99~false~false~false",
+    "14~BottomAssembly~#5555FF~false~false~false",
+    "15~Mechanical~#F022F0~false~false~false",
+    "21~Inner1~#800000~false~false~false",
+    "22~Inner2~#008000~false~false~false",
+    "23~Inner3~#00FF00~false~false~false",
+    "24~Inner4~#000080~false~false~false"
+  ],
+  "BBox": {
+    "x": 3974.9,
+    "y": 2974.8,
+    "width": 50.8,
+    "height": 50.8
+  }
+}
