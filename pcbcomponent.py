@@ -5,6 +5,9 @@ import json
 
 json.encoder.FLOAT_REPR = lambda o: format(o, '.2f')
 
+def fmt(v):
+    return format(v, '.2f')
+
 def _pairwise(iterable):
    a=iter(iterable)
    return zip(a, a)
@@ -30,7 +33,7 @@ class PCBBoundingBox:
             self.ymax=self.ymin+float(height)
 
     def __str__(self):
-        return '%d %d %d %d ' % (self.xmin, self.xmax, self.ymin, self.ymax)
+        return '%2f %2f %2f %2f ' % (self.xmin, self.xmax, self.ymin, self.ymax)
 
     def union(self, other):
         return PCBBoundingBox(xmin=min(self.xmin, other.xmin), xmax=max(self.xmax, other.xmax),
@@ -43,7 +46,7 @@ class PCBBoundingBox:
         self.ymax+=dy
 
     def json(self):
-        return {'x': self.xmin, 'y':self.ymin, 'width': self.xmax-self.xmin, 'height': self.ymax-self.ymin}
+        return {'x': fmt(self.xmin), 'y': fmt(self.ymin), 'width': fmt(self.xmax-self.xmin), 'height': fmt(self.ymax-self.ymin)}
 
 class _PCBShapePoint:
     def __init__(self, x, y):
@@ -51,7 +54,7 @@ class _PCBShapePoint:
         self.y=float(y)
 
     def __str__(self):
-        return str(self.x)+' '+str(self.y)
+        return fmt(self.x)+' '+fmt(self.y)
 
     def translate(self, dx, dy):
         self.x+=dx
@@ -78,7 +81,7 @@ class _PCBPathElement:
         self.coords=_PCBShapePoint(w.popleft(), w.popleft())
 
     def __str__(self):
-        arcargs=' '.join(self.arcargs) if self.cmd=='A' else ''
+        arcargs=' '.join([fmt(x) if isinstance(x, float) else str(x) for x in self.arcargs]) if self.cmd=='A' else ''
         return self.cmd+' '+arcargs+' '+str(self.coords)
 
     def translate(self, dx, dy):
@@ -139,7 +142,7 @@ class PCBShape:
             PCBShape.id_cntr+=1
 
     def __str__(self):
-        return '~'.join([str(self.attr[x]) for x in self.attr_list])
+        return '~'.join([(fmt(self.attr[x]) if isinstance(self.attr[x], float) else str(self.attr[x])) for x in self.attr_list])
 
     def translate(self, dx, dy):
         for (key, value) in self.attr.items():
@@ -167,7 +170,7 @@ class PCBComponent(json.JSONEncoder):
 
     def __str__(self):
         shape_str='#@$'.join([str(sh) for sh in self.shapes])
-        return "LIB~%d~%d~%s~%d~~%s~%d~%s~%d#@$" % (self.bbox.xmin, self.bbox.ymin, "", 0, self.id, self.locked,
+        return "LIB~%s~%s~%s~%d~~%s~%d~%s~%d#@$" % (fmt(self.bbox.xmin), fmt(self.bbox.ymin), "", 0, self.id, self.locked,
                  self.source['head']['uuid'], self.source['head']['utime'])+shape_str
 
     def translate(self, dx, dy):

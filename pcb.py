@@ -2,6 +2,8 @@ import json
 from pcbcomponent import PCBJSONEncoder, PCBBoundingBox, PCBShape
 import copy
 
+json.encoder.FLOAT_REPR = lambda o: format(o, '.2f')
+
 class PCB:
     def __init__(self):
         with open('pcb_template.json') as f:
@@ -30,3 +32,13 @@ class PCB:
 
     def json(self):
         return json.dumps(self.content, cls=PCBJSONEncoder, indent=2)
+
+    def translate(self, deltax, deltay):
+        bbox=None
+        for shape in self.content['shape']:
+            shape.translate(deltax, deltay)
+            if bbox is None:
+                bbox=copy.copy(shape.bbox)            
+            else:
+                bbox=bbox.union(shape.bbox)
+        self.content['BBox']=bbox
