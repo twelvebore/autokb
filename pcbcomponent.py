@@ -140,6 +140,8 @@ class PCBShape:
         if 'id' in self.attr:
             self.attr['id']='shp'+str(PCBShape.id_cntr)
             PCBShape.id_cntr+=1
+        if 'locked' in self.attr and self.attr['locked']=='':
+            self.attr['locked']=0
 
     def __str__(self):
         return '~'.join([(fmt(self.attr[x]) if isinstance(self.attr[x], float) else str(self.attr[x])) for x in self.attr_list])
@@ -170,7 +172,7 @@ class PCBComponent(json.JSONEncoder):
 
     def __str__(self):
         shape_str='#@$'.join([str(sh) for sh in self.shapes])
-        return "LIB~%s~%s~%s~%d~~%s~%d~%s~%d#@$" % (fmt(self.bbox.xmin), fmt(self.bbox.ymin), "", 0, self.id, self.locked,
+        return "LIB~%s~%s~%s~%d~~%s~%d~%s~%d~#@$" % (fmt(self.bbox.xmin), fmt(self.bbox.ymin), "", 0, self.id, self.locked,
                  self.source['head']['uuid'], self.source['head']['utime'])+shape_str
 
     def translate(self, dx, dy):

@@ -32,4 +32,6 @@ ty=(pcb.content['BBox'].ymin+pcb.content['BBox'].ymax)/2
 #pcb.add_component(ctrl)
 pcb.add_board_outline()
 
-print(pcb.json())
+with open('pcb_source.json', 'w') as fp:
+    fp.write(pcb.json())
+    fp.close()
