@@ -12,11 +12,12 @@ class PCB:
             self.content['BBox']=PCBBoundingBox(bb['x'], bb['y'], width=bb['width'], height=bb['height'])
             self.content['shape']=[]
 
-    def add_component(self, component):
-        if(len(self.content['shape'])==0):
-            self.content['BBox']=copy.copy(component.bbox)            
-        else:
-            self.content['BBox']=self.content['BBox'].union(component.bbox)
+    def add_component(self, component, update_bound=True):
+        if(update_bound):
+            if(len(self.content['shape'])==0):
+                self.content['BBox']=copy.copy(component.bbox)            
+            else:
+                self.content['BBox']=self.content['BBox'].union(component.bbox)
         self.content['shape'].append(component)
 
     def add_board_outline(self, border=20.0):
@@ -26,6 +27,18 @@ class PCB:
         ybottom=bb.ymin-border
         ytop=bb.ymax+border
         shape_str="TRACK~1~10~~%d %d %d %d %d %d %d %d %d %d~outline~1" % (xleft, ytop, xright, ytop, xright, ybottom, xleft, ybottom, xleft, ytop)
+        sh=PCBShape(shape_str)
+        sh.bbox=PCBBoundingBox(xleft, ybottom, xmax=xright, ymax=ytop)
+        self.add_component(sh)
+
+    def add_copper_flood(self, layer, border=5.0):
+        bb=self.content['BBox']
+        xleft=bb.xmin+border
+        xright=bb.xmax-border
+        ybottom=bb.ymin+border
+        ytop=bb.ymax-border
+        shape_str="COPPERAREA~1~%d~GND~%d %d %d %d %d %d %d %d %d %d~1~solid~shp%d~spoke~none~~~" % \
+                (layer, xleft, ytop, xright, ytop, xright, ybottom, xleft, ybottom, xleft, ytop, len(self.content['shape'])+1)
         sh=PCBShape(shape_str)
         sh.bbox=PCBBoundingBox(xleft, ybottom, xmax=xright, ymax=ytop)
         self.add_component(sh)

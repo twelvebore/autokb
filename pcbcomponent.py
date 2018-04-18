@@ -45,6 +45,12 @@ class PCBBoundingBox:
         self.ymin+=dy
         self.ymax+=dy
 
+    def width(self):
+        return self.xmax-self.xmin
+
+    def height(self):
+        return self.ymax-self.ymin
+
     def json(self):
         return {'x': fmt(self.xmin), 'y': fmt(self.ymin), 'width': fmt(self.xmax-self.xmin), 'height': fmt(self.ymax-self.ymin)}
 
@@ -82,7 +88,7 @@ class _PCBPathElement:
 
     def __str__(self):
         arcargs=' '.join([fmt(x) if isinstance(x, float) else str(x) for x in self.arcargs]) if self.cmd=='A' else ''
-        return self.cmd+' '+arcargs+' '+str(self.coords)
+        return self.cmd+arcargs+' '+str(self.coords)
 
     def translate(self, dx, dy):
         self.coords.translate(dx, dy)
@@ -122,7 +128,7 @@ class PCBShape:
                     'VIA': {'attr_list': ['x', 'y', 'diameter', 'net', 'hole radius', 'id', 'locked']},
                     'DIMENSION': {'attr_list': ['layer id', 'path', 'id', 'locked'], 'paths': ['path']},
                     'TEXT': {'attr_list': ['type', 'x', 'y', 'stroke width', 'rotation', 'mirror', 'layer id', 'net', 'font size',
-                            'string', 'text path', 'display', 'id', 'locked'], 'paths': ['text path']}
+                            'string', 'text path', 'display', 'id', 'something', 'locked'], 'paths': ['text path']}
                     }
         defs=shape_defs[shape_type]
         self.attr_list=['command']+defs['attr_list']
@@ -136,12 +142,13 @@ class PCBShape:
                 self.attr[key]=_PCBShapePath(self.attr[key])
         for k in ['x', 'y']:
             if k in self.attr: self.attr[k]=float(self.attr[k])
-        if 'net' in self.attr: self.attr['net']=''
         if 'id' in self.attr:
             self.attr['id']='shp'+str(PCBShape.id_cntr)
             PCBShape.id_cntr+=1
         if 'locked' in self.attr and self.attr['locked']=='':
             self.attr['locked']=0
+        if self.type=='TEXT':
+            self.attr['text path']=''
 
     def __str__(self):
         return '~'.join([(fmt(self.attr[x]) if isinstance(self.attr[x], float) else str(self.attr[x])) for x in self.attr_list])
@@ -166,14 +173,18 @@ class PCBComponent(json.JSONEncoder):
         self.pads=dict((sh.attr['number'], sh) for sh in self.shapes if sh.type=='PAD')
         self.id='gge'+str(PCBComponent.id_cntr)
         PCBComponent.id_cntr+=1
+        head=self.source['head']
+        for k in ('uuid', 'utime'):
+            if k not in head: head[k]=''
+
 #        cx=self.bbox.xmin
 #        cy=self.bbox.ymin
 #        self.translate(-cx, -cy)
 
     def __str__(self):
         shape_str='#@$'.join([str(sh) for sh in self.shapes])
-        return "LIB~%s~%s~%s~%d~~%s~%d~%s~%d~#@$" % (fmt(self.bbox.xmin), fmt(self.bbox.ymin), "", 0, self.id, self.locked,
-                 self.source['head']['uuid'], self.source['head']['utime'])+shape_str
+        return "LIB~%s~%s~%s~%d~~%s~%d~%s~%s~#@$" % (fmt(self.bbox.xmin), fmt(self.bbox.ymin), "", 0, self.id, self.locked,
+                 str(self.source['head']['uuid']), str(self.source['head']['utime']))+shape_str
 
     def translate(self, dx, dy):
         for shape in self.shapes:
