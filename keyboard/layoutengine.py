@@ -6,7 +6,7 @@ class KeyboardLayoutEngine:
         self.properties={}
         self.pitch=19.05
 
-    def load_from_file(self, filename):
+    def load_layout_from_file(self, filename):
         with open(filename) as fp:
             self.raw_data=json.load(fp)
 

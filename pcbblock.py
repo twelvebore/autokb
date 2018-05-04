@@ -119,7 +119,7 @@ class PCBShape:
                     'HOLE': {'attr_list': ['x', 'y', 'diameter', 'id', 'locked']},
                     'PAD': {'attr_list': ['shape', 'x', 'y', 'width', 'height', 'layer id', 'net', 'number', 'hole radius',
                             'points', 'rotation', 'id', 'hole length', 'hole points', 'plated', 'locked'], 'points': ['points', 'hole points']},
-                    'LIB': {'attr_list': ['x', 'y', 'custom attributes', 'rotation', 'import flag', 'id', 'locked']},
+                    'LIB': {'attr_list': ['x', 'y', 'custom attributes', 'rotation', 'import flag', 'id', 'locked', 'uuid', 'utime', 'something']},
                     'COPPERAREA': {'attr_list': ['stroke width', 'layer id', 'net', 'points', 'clearance width', 'fill style',
                             'id', 'thermal', 'keep island', 'copper zone', 'locked'], 'points': ['points']},
                     'RECT': {'attr_list': ['x', 'y', 'width', 'height', 'layer id', 'id', 'locked']},
@@ -132,7 +132,7 @@ class PCBShape:
                     }
         defs=shape_defs[shape_type]
         self.attr_list=['command']+defs['attr_list']
-        self.attr=dict(zip(self.attr_list, shape_str.split('~')))
+        self.attr=dict(zip(self.attr_list, shape_str.split('~', maxsplit=len(self.attr_list)-1)))
         self.type=self.attr['command']
         if 'points' in defs:
             for key in defs['points']:
@@ -149,9 +149,19 @@ class PCBShape:
             self.attr['locked']=0
         if self.type=='TEXT':
             self.attr['text path']=''
+        self.shapes=[]
+        if self.type=='LIB':
+            (self.attr['something'], shape_str)=self.attr['something'].split('#@$', maxsplit=1)
+            self.shapes=[PCBShape(sh) for sh in shape_str.split('#@$')]
+            self.custom_attr={}
+            for (k, v) in _pairwise(self.attr['custom attributes'].split('`')):
+                self.custom_attr[k]=v
 
     def __str__(self):
-        return '~'.join([(fmt(self.attr[x]) if isinstance(self.attr[x], float) else str(self.attr[x])) for x in self.attr_list])
+        str_val='~'.join([(fmt(self.attr[x]) if isinstance(self.attr[x], float) else str(self.attr[x])) for x in self.attr_list])
+        if(self.type=='LIB'):
+            str_val+='#@$'.join([str(sh) for sh in self.shapes])
+        return str_val
 
     def translate(self, dx, dy):
         for (key, value) in self.attr.items():
@@ -159,8 +169,10 @@ class PCBShape:
             if(key=='y'): self.attr[key]+=float(dy)
             if(isinstance(value, (_PCBShapePath, _PCBShapePointList))):
                 value.translate(dx, dy)
+        for sh in self.shapes:
+            sh.translate(dx, dy)
 
-class PCBComponent(json.JSONEncoder):
+class PCBBlock(json.JSONEncoder):
     id_cntr=1
 
     def __init__(self, filename):
@@ -170,21 +182,41 @@ class PCBComponent(json.JSONEncoder):
         bb=self.source['BBox']
         self.bbox=PCBBoundingBox(bb['x'], bb['y'], width=bb['width'], height=bb['height'])
         self.locked=1
-        self.pads=dict((sh.attr['number'], sh) for sh in self.shapes if sh.type=='PAD')
-        self.id='gge'+str(PCBComponent.id_cntr)
-        PCBComponent.id_cntr+=1
+        self.net_pads=PCBBlock._find_nets(self.shapes)
+        self.labels=PCBBlock._find_labels(self.shapes)
+        self.id='gge'+str(PCBBlock.id_cntr)
+        PCBBlock.id_cntr+=1
         head=self.source['head']
         for k in ('uuid', 'utime'):
             if k not in head: head[k]=''
-
-#        cx=self.bbox.xmin
-#        cy=self.bbox.ymin
-#        self.translate(-cx, -cy)
 
     def __str__(self):
         shape_str='#@$'.join([str(sh) for sh in self.shapes])
         return "LIB~%s~%s~%s~%d~~%s~%d~%s~%s~#@$" % (fmt(self.bbox.xmin), fmt(self.bbox.ymin), "", 0, self.id, self.locked,
                  str(self.source['head']['uuid']), str(self.source['head']['utime']))+shape_str
+
+    @staticmethod
+    def _find_nets(shape_list, res=None):
+        if res is None: res={}
+        for sh in shape_list:
+            if sh.type=='LIB':
+                res=PCBBlock._find_nets(sh.shapes, res)
+            elif sh.type=='PAD':
+                net=sh.attr['net']
+                if net not in res: res[net]=[]
+                res[net].append(sh)
+        return res
+
+    @staticmethod
+    def _find_labels(shape_list, prefix=None, res=None):
+        if res is None: res={}
+        for sh in shape_list:
+            if sh.type=='LIB':
+                res=PCBBlock._find_labels(sh.shapes, res=res, prefix=sh.custom_attr['prefix'] if 'prefix' in sh.custom_attr else None)
+            elif sh.type=='TEXT' and sh.attr['string']=='LBL':
+                if prefix not in res: res[prefix]=[]
+                res[prefix].append(sh)
+        return res
 
     def translate(self, dx, dy):
         for shape in self.shapes:
@@ -198,23 +230,34 @@ class PCBComponent(json.JSONEncoder):
             if 'id' in sh.attr:
                sh.attr['id']='shp'+str(PCBShape.id_cntr)
             PCBShape.id_cntr+=1
-        c.id='lib'+str(PCBComponent.id_cntr)
-        PCBComponent.id_cntr+=1
+        c.id='lib'+str(PCBBlock.id_cntr)
+        PCBBlock.id_cntr+=1
         return c
 
     def json(self):
         return json.dumps(self.shapes, cls=PCBJSONEncoder)
 
-    def set_pad_net(self, pad, net):
-        pad=str(pad)
-        if(pad not in self.pads):
-            raise PCBException("Pad "+pad+" not found")
-        self.pads[pad].attr['net']=net
+    def update_net(self, net_from, net_to):
+        if(net_from not in self.net_pads):
+            raise PCBException("Pad "+net_from+" not found")
+        for sh in self.net_pads[net_from]:
+            sh.attr['net']=net_to
+
+    def assign_labels(self, accum):
+        for prefix, shape_list in self.labels.items():
+            if prefix not in accum: accum[prefix]=1
+            for sh in shape_list:
+                lbl=prefix+str(accum[prefix])
+                sh.attr['string']=lbl
+                sh.attr['display']='Y'
+                sh.attr['type']='L'
+                accum[prefix]+=1
+        return accum
 
 class PCBJSONEncoder(json.JSONEncoder):
     def default(self, o):
-        if(isinstance(o, (PCBBoundingBox))):
+        if(isinstance(o, (PCBBoundingBox, PCBBlock))):
             return o.json()
-        if(isinstance(o, (PCBComponent, PCBShape))):
+        if(isinstance(o, (PCBShape))):
             return str(o)
         return super().default(o)

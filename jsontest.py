@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import json
-from pcbcomponent import PCBComponent
+from pcbblock import PCBBlock
 from pcb import PCB
 from keyboard.layoutengine import KeyboardLayoutEngine
 
@@ -10,26 +10,26 @@ def mm2eda(mm):
     return mm*100.0/25.4
 
 kle=KeyboardLayoutEngine()
-kle.load_from_file('iso tkl.json')
+kle.load_layout_from_file('layouts/iso tkl.json')
 (switches, bbox)=kle.layout_switches()
 
-switch=PCBComponent('switch.json')
+switch=PCBBlock('blocks/cherry mx smd diode.json')
 
 pcb=PCB()
 for sw in switches:
-        x=switch.clone()
-        x.translate(mm2eda(sw['x']), mm2eda(sw['y']))
-        x.set_pad_net('1', 'R%d' % sw['row'])
-        x.set_pad_net('2', 'C%d' % sw['col'])
-        pcb.add_component(x)
+    x=switch.clone()
+    x.translate(mm2eda(sw['x']), mm2eda(sw['y']))
+    x.update_net('ROW', 'ROW_%d' % (sw['row']+1))
+    x.update_net('COL', 'COL_%d' % (sw['col']+1))
+    pcb.add_component(x)
 tx=(pcb.content['BBox'].xmin+pcb.content['BBox'].xmax)/2
 ty=pcb.content['BBox'].ymax+100
 
-for thing in (['avr', 'led', 'usb']):
-    cmpt=PCBComponent('kbctrl.'+thing+'.json').clone()
-    cmpt.translate(tx-cmpt.bbox.xmin, ty-cmpt.bbox.ymin)
-    pcb.add_component(cmpt, update_bound=False)
-    tx+=cmpt.bbox.width()+100
+for thing in (['teensy 2.0']):
+    block=PCBBlock('blocks/'+thing+'.json').clone()
+    block.translate(tx-block.bbox.xmin, ty-block.bbox.ymin)
+    pcb.add_component(block, update_bound=False)
+    tx+=block.bbox.width()+100
 
 # Add the board outline
 pcb.add_board_outline()
@@ -40,3 +40,5 @@ pcb.translate(4000-pcb.content['BBox'].xmin, 3000-pcb.content['BBox'].ymin)
 with open('pcb_source.json', 'w') as fp:
     fp.write(pcb.json())
     fp.close()
+
+print(pcb.label_accumulator)

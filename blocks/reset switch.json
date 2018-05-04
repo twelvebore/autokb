@@ -1,0 +1,57 @@
+{
+  "head": {
+    "docType": "3",
+    "editorVersion": "5.4.9",
+    "c_para": {},
+    "hasIdFlag": true,
+    "x": "4000",
+    "y": "3000",
+    "importFlag": 0,
+    "transformList": ""
+  },
+  "canvas": "CA~1000~1000~#000000~yes~#FFFFFF~10~1000~1000~line~1~mil~1~45~visible~0.5~4000~3000",
+  "shape": [
+    "LIB~4184~3074~package`KMR2~~~gge2~1~c7eb4830999042a5beedd4d84ec4332e~1513180546~0#@$TEXT~P~4184~3063~0.7~0~~3~~4.5~SW1~M 4186.86 3061.16 L 4186.45 3060.75 L 4185.84 3060.55 L 4185.02 3060.55 L 4184.41 3060.75 L 4184 3061.16 L 4184 3061.57 L 4184.2 3061.98 L 4184.41 3062.18 L 4184.82 3062.39 L 4186.05 3062.8 L 4186.45 3063 L 4186.66 3063.2 L 4186.86 3063.61 L 4186.86 3064.23 L 4186.45 3064.64 L 4185.84 3064.84 L 4185.02 3064.84 L 4184.41 3064.64 L 4184 3064.23 M 4188.21 3060.55 L 4189.24 3064.84 M 4190.26 3060.55 L 4189.24 3064.84 M 4190.26 3060.55 L 4191.28 3064.84 M 4192.3 3060.55 L 4191.28 3064.84 M 4193.65 3061.36 L 4194.06 3061.16 L 4194.68 3060.55 L 4194.68 3064.84~~gge3~~0#@$TEXT~N~4184~3055~0.5~0~~3~~4.5~~M 3784 2774~none~gge5~~0#@$TRACK~1~3~~4175.7 3068.5 4192.3 3068.5~gge7~0#@$TRACK~1~3~~4192.3 3068.5 4192.3 3079.5~gge8~0#@$TRACK~1~3~~4192.3 3079.5 4175.7 3079.5~gge9~0#@$TRACK~1~3~~4175.7 3079.5 4175.7 3068.5~gge10~0#@$TRACK~1~3~~4179.7 3074.8 4179.7 3073.2~gge11~0#@$TRACK~1~3~~4182 3070.9 4186 3070.9~gge12~0#@$TRACK~1~3~~4188.3 3073.2 4188.3 3074.8~gge13~0#@$TRACK~1~3~~4186 3077.1 4182 3077.1~gge14~0#@$PAD~RECT~4191.9~3070.9~3.94~3.94~1~RESET~1~0.001~4189.93 3068.93 4193.87 3068.93 4193.87 3072.87 4189.93 3072.87~0~gge15~0~~Y~0#@$PAD~RECT~4191.9~3077.1~3.94~3.94~1~GND~2~0.001~4189.93 3075.13 4193.87 3075.13 4193.87 3079.07 4189.93 3079.07~0~gge18~0~~Y~0#@$PAD~RECT~4176.1~3077.1~3.94~3.94~1~GND~4~0.001~4174.13 3075.13 4178.07 3075.13 4178.07 3079.07 4174.13 3079.07~0~gge21~0~~Y~0#@$PAD~RECT~4176.1~3070.9~3.94~3.94~1~RESET~3~0.001~4174.13 3068.93 4178.07 3068.93 4178.07 3072.87 4174.13 3072.87~0~gge24~0~~Y~0#@$ARC~1~3~~M 4182.0315 3077.1496 A 2.3622 2.3622 0 0 1 4179.6693 3074.7874~~gge27~0#@$ARC~1~3~~M 4179.6693 3073.2126 A 2.3622 2.3622 0 0 1 4182.0315 3070.8504~~gge28~0#@$ARC~1~3~~M 4185.9685 3070.8504 A 2.3622 2.3622 0 0 1 4188.3307 3073.2126~~gge29~0#@$ARC~1~3~~M 4188.3307 3074.7874 A 2.3622 2.3622 0 0 1 4185.9685 3077.1496~~gge30~0"
+  ],
+  "systemColor": "#000000~#FFFFFF~#FFFFFF~#222222~#FFFFFF",
+  "layers": [
+    "1~TopLayer~#FF0000~true~true~true",
+    "2~BottomLayer~#0000FF~true~false~true",
+    "3~TopSilkLayer~#FFFF00~true~false~true",
+    "4~BottomSilkLayer~#808000~true~false~true",
+    "5~TopPasteMaskLayer~#808080~false~false~false",
+    "6~BottomPasteMaskLayer~#800000~false~false~false",
+    "7~TopSolderMaskLayer~#800080~false~false~false",
+    "8~BottomSolderMaskLayer~#AA00FF~false~false~false",
+    "9~Ratlines~#6464FF~true~false~true",
+    "10~BoardOutline~#FF00FF~true~false~true",
+    "11~Multi-Layer~#C0C0C0~true~false~true",
+    "12~Document~#FFFFFF~true~false~true",
+    "13~TopAssembly~#33CC99~false~false~false",
+    "14~BottomAssembly~#5555FF~false~false~false",
+    "15~Mechanical~#F022F0~false~false~false",
+    "21~Inner1~#800000~false~false~false",
+    "22~Inner2~#008000~false~false~false",
+    "23~Inner3~#00FF00~false~false~false",
+    "24~Inner4~#000080~false~false~false"
+  ],
+  "BBox": {
+    "x": 4174.1,
+    "y": 3060.6,
+    "width": 20.6,
+    "height": 18.9
+  },
+  "preference": {
+    "hideFootprints": "",
+    "hideNets": ""
+  },
+  "DRCRULE": {
+    "trackWidth": 0.6,
+    "track2Track": 0.6,
+    "pad2Pad": 0.6,
+    "track2Pad": 0.6,
+    "hole2Hole": 1,
+    "holeSize": 1.2,
+    "isRealtime": true
+  }
+}

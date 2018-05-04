@@ -1,24 +1,28 @@
 import json
-from pcbcomponent import PCBJSONEncoder, PCBBoundingBox, PCBShape
+from pcbblock import PCBJSONEncoder, PCBBoundingBox, PCBShape, PCBBlock
 import copy
 
 json.encoder.FLOAT_REPR = lambda o: format(o, '.2f')
 
 class PCB:
     def __init__(self):
-        with open('pcb_template.json') as f:
+        with open('templates/pcb_template.json') as f:
             self.content=json.load(f)
             bb=self.content['BBox']
             self.content['BBox']=PCBBoundingBox(bb['x'], bb['y'], width=bb['width'], height=bb['height'])
             self.content['shape']=[]
+            self.label_accumulator={}
 
     def add_component(self, component, update_bound=True):
-        if(update_bound):
+        if(update_bound and hasattr(component, 'bbox')):
             if(len(self.content['shape'])==0):
                 self.content['BBox']=copy.copy(component.bbox)            
             else:
                 self.content['BBox']=self.content['BBox'].union(component.bbox)
-        self.content['shape'].append(component)
+        if isinstance(component, PCBBlock):
+            self.label_accumulator=component.assign_labels(self.label_accumulator)
+        for c in component.shapes if isinstance(component, PCBBlock) else [component]:
+            self.content['shape'].append(c)
 
     def add_board_outline(self, border=20.0):
         bb=self.content['BBox']
@@ -50,8 +54,9 @@ class PCB:
         bbox=None
         for shape in self.content['shape']:
             shape.translate(deltax, deltay)
-            if bbox is None:
-                bbox=copy.copy(shape.bbox)            
-            else:
-                bbox=bbox.union(shape.bbox)
+            if(hasattr(shape, 'bbox')):
+                if bbox is None:
+                    bbox=copy.copy(shape.bbox)            
+                else:
+                    bbox=bbox.union(shape.bbox)
         self.content['BBox']=bbox
