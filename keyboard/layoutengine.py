@@ -25,6 +25,7 @@ class KeyboardLayoutEngine:
             centre_x=0.0
             next_height = next_width = 1.0
             next_x_offset = next_y_offset = 0.0
+            col=0
             for col, key in enumerate(row_data):
                 width=next_width
                 height=next_height

@@ -2,12 +2,23 @@ import re
 from collections import deque
 import copy
 import json
+import re
 
 json.encoder.FLOAT_REPR = lambda o: format(o, '.2f')
 
+class PCBID:
+    id_cntr=0
+
+    @staticmethod
+    def next_id():
+        PCBID.id_cntr+=1
+        id='gge'+str(PCBID.id_cntr)
+        return id
+
+
 def fmt(v):
     return format(v, '.2f')
-
+    
 def _pairwise(iterable):
    a=iter(iterable)
    return zip(a, a)
@@ -110,8 +121,6 @@ class _PCBShapePath:
             el.translate(dx, dy)
 
 class PCBShape:
-    id_cntr=1
-
     def __init__(self, shape_str):
         (shape_type, dummy)=shape_str.split('~', 1)
         shape_defs={'TRACK': {'attr_list': ['stroke width', 'layer id', 'net', 'points', 'id', 'locked'], 'points': ['points']},
@@ -142,9 +151,6 @@ class PCBShape:
                 self.attr[key]=_PCBShapePath(self.attr[key])
         for k in ['x', 'y']:
             if k in self.attr: self.attr[k]=float(self.attr[k])
-        if 'id' in self.attr:
-            self.attr['id']='shp'+str(PCBShape.id_cntr)
-            PCBShape.id_cntr+=1
         if 'locked' in self.attr and self.attr['locked']=='':
             self.attr['locked']=0
         if self.type=='TEXT':
@@ -156,11 +162,12 @@ class PCBShape:
             self.custom_attr={}
             for (k, v) in _pairwise(self.attr['custom attributes'].split('`')):
                 self.custom_attr[k]=v
+        self.update_id()
 
     def __str__(self):
         str_val='~'.join([(fmt(self.attr[x]) if isinstance(self.attr[x], float) else str(self.attr[x])) for x in self.attr_list])
         if(self.type=='LIB'):
-            str_val+='#@$'.join([str(sh) for sh in self.shapes])
+            str_val+='#@$'+'#@$'.join([str(sh) for sh in self.shapes])
         return str_val
 
     def translate(self, dx, dy):
@@ -172,9 +179,13 @@ class PCBShape:
         for sh in self.shapes:
             sh.translate(dx, dy)
 
+    def update_id(self):
+        if 'id' in self.attr:
+            self.attr['id']=PCBID.next_id()
+        for sh in self.shapes:
+            sh.update_id()
+            
 class PCBBlock(json.JSONEncoder):
-    id_cntr=1
-
     def __init__(self, filename):
         with open(filename) as file:
             self.source=json.load(file)
@@ -184,16 +195,16 @@ class PCBBlock(json.JSONEncoder):
         self.locked=1
         self.net_pads=PCBBlock._find_nets(self.shapes)
         self.labels=PCBBlock._find_labels(self.shapes)
-        self.id='gge'+str(PCBBlock.id_cntr)
-        PCBBlock.id_cntr+=1
+        self.id=PCBID.next_id()
         head=self.source['head']
         for k in ('uuid', 'utime'):
             if k not in head: head[k]=''
 
     def __str__(self):
         shape_str='#@$'.join([str(sh) for sh in self.shapes])
-        return "LIB~%s~%s~%s~%d~~%s~%d~%s~%s~#@$" % (fmt(self.bbox.xmin), fmt(self.bbox.ymin), "", 0, self.id, self.locked,
-                 str(self.source['head']['uuid']), str(self.source['head']['utime']))+shape_str
+        return shape_str
+        return ("LIB~%s~%s~%s~%d~~%s~%d~%s~%s~#@$" % (fmt(self.bbox.xmin), fmt(self.bbox.ymin), "", 0, self.id, self.locked,
+                 str(self.source['head']['uuid']), str(self.source['head']['utime'])))+shape_str
 
     @staticmethod
     def _find_nets(shape_list, res=None):
@@ -201,7 +212,7 @@ class PCBBlock(json.JSONEncoder):
         for sh in shape_list:
             if sh.type=='LIB':
                 res=PCBBlock._find_nets(sh.shapes, res)
-            elif sh.type=='PAD':
+            elif 'net' in sh.attr:
                 net=sh.attr['net']
                 if net not in res: res[net]=[]
                 res[net].append(sh)
@@ -227,11 +238,8 @@ class PCBBlock(json.JSONEncoder):
     def clone(self):
         c=copy.deepcopy(self)
         for sh in c.shapes:
-            if 'id' in sh.attr:
-               sh.attr['id']='shp'+str(PCBShape.id_cntr)
-            PCBShape.id_cntr+=1
-        c.id='lib'+str(PCBBlock.id_cntr)
-        PCBBlock.id_cntr+=1
+            sh.update_id()
+        c.id=PCBID.next_id()
         return c
 
     def json(self):
@@ -242,6 +250,8 @@ class PCBBlock(json.JSONEncoder):
             raise PCBException("Pad "+net_from+" not found")
         for sh in self.net_pads[net_from]:
             sh.attr['net']=net_to
+        self.net_pads[net_to]=self.net_pads[net_from]
+        del self.net_pads[net_from]
 
     def assign_labels(self, accum):
         for prefix, shape_list in self.labels.items():
@@ -253,6 +263,12 @@ class PCBBlock(json.JSONEncoder):
                 sh.attr['type']='L'
                 accum[prefix]+=1
         return accum
+
+    def allocate_io(self, pattern, net_to):
+        pads=list(filter(lambda x: re.match(pattern, x), self.net_pads.keys()))
+        net_from=pads[0]
+        self.update_net(net_from, net_to)
+        return net_from
 
 class PCBJSONEncoder(json.JSONEncoder):
     def default(self, o):
