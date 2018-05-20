@@ -1,0 +1,53 @@
+{
+  "head": {
+    "docType": "3",
+    "editorVersion": "5.4.12",
+    "c_para": {},
+    "hasIdFlag": true
+  },
+  "canvas": "CA~1000~1000~#000000~yes~#FFFFFF~10~1000~1000~line~1~mil~1~45~visible~0.5~4000~3000",
+  "shape": [
+    "LIB~4300~3208~pre`U?`description`Cherry MX Keyswitch footprint`~~~gge6~1~d834d694ab2e41eeae691c669047ca84~1478037396~0#@$TEXT~P~4300~3173~0.7~0~~3~~4.5~SW_?~M 4302.86 3171.16L4302.45 3170.75 L4301.84 3170.55 L4301.02 3170.55 L4300.41 3170.75 L4300 3171.16 L4300 3171.57 L4300.2 3171.98 L4300.41 3172.18 L4300.82 3172.39 L4302.05 3172.8 L4302.45 3173 L4302.66 3173.2 L4302.86 3173.61 L4302.86 3174.23 L4302.45 3174.64 L4301.84 3174.84 L4301.02 3174.84 L4300.41 3174.64 L4300 3174.23 M 4304.21 3170.55L4305.24 3174.84 M 4306.26 3170.55L4305.24 3174.84 M 4306.26 3170.55L4307.28 3174.84 M 4308.3 3170.55L4307.28 3174.84 M 4309.65 3176.27L4313.34 3176.27 M 4314.69 3171.57L4314.69 3171.36 L4314.89 3170.95 L4315.1 3170.75 L4315.5 3170.55 L4316.32 3170.55 L4316.73 3170.75 L4316.94 3170.95 L4317.14 3171.36 L4317.14 3171.77 L4316.94 3172.18 L4316.73 3172.39 L4315.91 3172.8 L4315.91 3173.41 M 4315.91 3174.43L4315.71 3174.64 L4315.91 3174.84 L4316.12 3174.64 L4315.91 3174.43 ~~gge7~~0#@$TEXT~N~4300~3165~0.5~0~~3~~4.5~~M 3900 2908~none~gge9~~0#@$TRACK~1~3~~4270 3178 4330 3178 4330 3238 4270 3238 4270 3178~gge11~0#@$HOLE~4300~3208~8.07~gge12~0#@$HOLE~4320~3208~4~gge16~0#@$HOLE~4280~3208~4~gge20~0#@$PAD~ELLIPSE~4285~3198~10~10~11~~1~2.95~~0~gge24~0~~Y~0#@$PAD~ELLIPSE~4310~3188~10~10~11~~2~2.95~~0~gge27~0~~Y~0"
+  ],
+  "systemColor": "#000000~#FFFFFF~#FFFFFF~#222222~#FFFFFF",
+  "layers": [
+    "1~TopLayer~#FF0000~true~true~true",
+    "2~BottomLayer~#0000FF~true~false~true",
+    "3~TopSilkLayer~#FFFF00~true~false~true",
+    "4~BottomSilkLayer~#808000~true~false~true",
+    "5~TopPasteMaskLayer~#808080~false~false~false",
+    "6~BottomPasteMaskLayer~#800000~false~false~false",
+    "7~TopSolderMaskLayer~#800080~false~false~false",
+    "8~BottomSolderMaskLayer~#AA00FF~false~false~false",
+    "9~Ratlines~#6464FF~false~false~true",
+    "10~BoardOutline~#FF00FF~true~false~true",
+    "11~Multi-Layer~#C0C0C0~true~false~true",
+    "12~Document~#FFFFFF~true~false~true",
+    "13~TopAssembly~#33CC99~false~false~false",
+    "14~BottomAssembly~#5555FF~false~false~false",
+    "15~Mechanical~#F022F0~false~false~false",
+    "21~Inner1~#800000~false~false~false",
+    "22~Inner2~#008000~false~false~false",
+    "23~Inner3~#00FF00~false~false~false",
+    "24~Inner4~#000080~false~false~false"
+  ],
+  "BBox": {
+    "x": 4270,
+    "y": 3170.6,
+    "width": 60,
+    "height": 67.4
+  },
+  "preference": {
+    "hideFootprints": "",
+    "hideNets": ""
+  },
+  "DRCRULE": {
+    "trackWidth": 0.6,
+    "track2Track": 0.6,
+    "pad2Pad": 0.6,
+    "track2Pad": 0.6,
+    "hole2Hole": 1,
+    "holeSize": 1.2,
+    "isRealtime": false
+  }
+}
