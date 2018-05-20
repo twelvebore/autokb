@@ -10,10 +10,10 @@ def mm2eda(mm):
     return mm*100.0/25.4
 
 kle=KeyboardLayoutEngine()
-kle.load_layout_from_file('layouts/ftkl left-hand mash pad.json')
+kle.load_layout_from_file('layouts/simple 2x2.json')
 (switches, bbox)=kle.layout_switches()
 
-switch=PCBBlock('blocks/cherry mx smd diode.json')
+switch=PCBBlock('blocks/cherry mx switch 1U.json')
 controller=PCBBlock('blocks/teensy 2.0++.json')
 
 pcb=PCB()
@@ -24,8 +24,8 @@ for sw in switches:
     x.translate(mm2eda(sw['x']), mm2eda(sw['y']))
     rowname='ROW%d' % (sw['row']+1)
     colname='COL%d' % (sw['col']+1)
-    x.update_net('ROW', rowname)
-    x.update_net('COL', colname)
+    x.update_net('1', rowname)
+    x.update_net('2', colname)
     pcb.add_component(x)
     if rowname not in iopads:
         pad=iopads[rowname]=controller.allocate_io(r'IO\.(.*)', rowname)

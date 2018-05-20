@@ -224,7 +224,7 @@ class PCBBlock(json.JSONEncoder):
         for sh in shape_list:
             if sh.type=='LIB':
                 res=PCBBlock._find_labels(sh.shapes, res=res, prefix=sh.custom_attr['prefix'] if 'prefix' in sh.custom_attr else None)
-            elif sh.type=='TEXT' and sh.attr['string']=='LBL':
+            elif sh.type=='TEXT' and sh.attr['string']=='LBL' and prefix is not None:
                 if prefix not in res: res[prefix]=[]
                 res[prefix].append(sh)
         return res
