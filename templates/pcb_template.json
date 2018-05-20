@@ -9,7 +9,7 @@
     "shape": [],
     "systemColor": "#000000~#FFFFFF~#FFFFFF~#222222~#FFFFFF",
     "layers": [
-      "1~TopLayer~#FF0000~true~true~true",
+      "1~TopLayer~#CF0000~true~true~true",
       "2~BottomLayer~#00C0FF~true~false~true",
       "3~TopSilkLayer~#FFFF00~true~false~true",
       "4~BottomSilkLayer~#808000~true~false~true",

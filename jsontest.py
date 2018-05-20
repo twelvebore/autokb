@@ -10,7 +10,7 @@ def mm2eda(mm):
     return mm*100.0/25.4
 
 kle=KeyboardLayoutEngine()
-kle.load_layout_from_file('layouts/iso tkl.json')
+kle.load_layout_from_file('layouts/ftkl left-hand mash pad.json')
 (switches, bbox)=kle.layout_switches()
 
 switch=PCBBlock('blocks/cherry mx smd diode.json')

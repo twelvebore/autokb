@@ -18,7 +18,7 @@ class PCBID:
 
 def fmt(v):
     return format(v, '.2f')
-    
+
 def _pairwise(iterable):
    a=iter(iterable)
    return zip(a, a)
@@ -203,8 +203,8 @@ class PCBBlock(json.JSONEncoder):
     def __str__(self):
         shape_str='#@$'.join([str(sh) for sh in self.shapes])
         return shape_str
-        return ("LIB~%s~%s~%s~%d~~%s~%d~%s~%s~#@$" % (fmt(self.bbox.xmin), fmt(self.bbox.ymin), "", 0, self.id, self.locked,
-                 str(self.source['head']['uuid']), str(self.source['head']['utime'])))+shape_str
+#        return ("LIB~%s~%s~%s~%d~~%s~%d~%s~%s~#@$" % (fmt(self.bbox.xmin), fmt(self.bbox.ymin), "", 0, self.id, self.locked,
+#                 str(self.source['head']['uuid']), str(self.source['head']['utime'])))+shape_str
 
     @staticmethod
     def _find_nets(shape_list, res=None):
